@@ -1,13 +1,14 @@
 import os
 from pymongo import MongoClient
-from dotenv import load_dotenv
 
-load_dotenv()
-
+# Get MongoDB URI from Render environment variables
 MONGO_URI = os.getenv("MONGO_URI")
-client = MongoClient(MONGO_URI)
-db = client.get_database()
+DB_NAME = os.getenv("DB_NAME", "quizdb")  # fallback to quizdb if not set
 
+client = MongoClient(MONGO_URI)
+db = client[DB_NAME]  # explicitly select database
+
+# Collections
 users_col = db["users"]
 questions_col = db["questions"]
 answers_col = db["answers"]
