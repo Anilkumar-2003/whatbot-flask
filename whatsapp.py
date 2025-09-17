@@ -1,5 +1,5 @@
-# whatsapp.py
-import os, requests
+import os
+import requests
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -7,27 +7,20 @@ load_dotenv()
 ACCESS_TOKEN = os.getenv("ACCESS_TOKEN")
 PHONE_NUMBER_ID = os.getenv("PHONE_NUMBER_ID")
 
-GRAPH_URL = f"https://graph.facebook.com/v20.0/{PHONE_NUMBER_ID}/messages"
-HEADERS = {
+url = f"https://graph.facebook.com/v20.0/{PHONE_NUMBER_ID}/messages"
+
+headers = {
     "Authorization": f"Bearer {ACCESS_TOKEN}",
     "Content-Type": "application/json"
 }
 
-def send_text(to_number, text):
-    """
-    to_number: E.164 without + (e.g. "919166082886")
-    """
-    payload = {
+def send_text(recipient, message):
+    data = {
         "messaging_product": "whatsapp",
-        "to": to_number,
+        "to": recipient,
         "type": "text",
-        "text": {
-            "body": text
-        }
+        "text": {"body": message}
     }
-    resp = requests.post(GRAPH_URL, headers=HEADERS, json=payload)
-    # return status for logging
-    try:
-        return resp.status_code, resp.json()
-    except Exception:
-        return resp.status_code, resp.text
+    response = requests.post(url, headers=headers, json=data)
+    print("Send response:", response.status_code, response.text)
+    return response
